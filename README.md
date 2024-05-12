@@ -1,35 +1,45 @@
-# Pacman Auto Update
+# Pacman Auto Download
 
 Automaticly downloads packages for further ease update.
 
-Updates are automatically **postponed** under unfavorable conditions:
+Updates downloading are automatically **postponed** under unfavorable conditions:
 - 🔋 The **battery** has less than 50% of charge.
 - 💸 networkmanager is installed, and the **connection** is guessed as metered.
 - 🔒 The package database has a **lock** younger than a day, and older than boot time. Otherwise the lock is automatically removed.
 
+## Idea
+
+Recently I was searching how can I make my life easier with pacman.
+Downloading all packages might take a lot of time (cause I forget to update...),
+and sometimes I need updates right now. I saw original repo and didn't like the 
+idea to run updates automatically. But downloading it automatically and installing 
+**manualy** is a different thing, and it's more safely. So thats why it's here!
 
 ## Installing
 
-In the application **Terminal** enter:
+Clone this repo:
 
 ```sh
-curl --silent https://raw.githubusercontent.com/cmuench/pacman-auto-update/master/install.sh | bash
+git clone https://github.com/helf4ch/pacman-auto-download.git
 ```
 
-After that the software will be **automatically enabled**, and also it will automatically build and upgrade its **own package**.
+Install package:
 
-Having this program in the **AUR** is not possible right now, simply because its moderators disagree with having any kind of method for automatically upgrading the system.
+```sh
+cd package; makepkg -si
+```
 
+Done!
 
 ## Inspecting status
 
 Of the **service**:
 ```sh
-systemctl status pacman-auto-update
+systemctl status pacman-auto-download
 ```
 
 Of the **timer**:
 ```sh
-systemctl list-timers pacman-auto-update
+systemctl list-timers pacman-auto-download
 ```
 
