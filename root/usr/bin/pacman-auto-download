@@ -2,7 +2,7 @@
 set -em
 
 # For debugging (either "x" or empty):
-verbose=
+verbose="x"
 forcedUpdate=
 
 # Other:
@@ -12,9 +12,9 @@ keyringsLock="/var/lib/pacman/keys.lck"
 
 mainFunction () {
 	if updatingIsFavorable && updatingIsNeeded; then
-		if updatingAutoupdateIsNeeded; then
-			updateAutoupdate
-		fi
+		# if updatingAutoupdateIsNeeded; then
+		# 	# updateAutoupdate
+		# fi
 		
 		updateKeyrings
 		updateSystem
@@ -24,34 +24,34 @@ mainFunction () {
 }
 
 
-autoupdateIsOutdated () {
-	local repoEpoch; repoEpoch="$(autoupdateRepoEpoch)"
-	local localEpoch; localEpoch="$(autoupdateLocalEpoch)"
-
-	! [[ "${localEpoch}" =~ : ]] &&
-	[[ "${repoEpoch}" -gt "${localEpoch}" ]]
-}
-
-
-autoupdateLocalEpoch () {
-	pacman --query --info pacman-auto-update |
-	grep "Version" |
-	cut --delimiter=' ' --fields=11 |
-	cut --delimiter='-' --fields=1
-}
+# autoupdateIsOutdated () {
+# 	local repoEpoch; repoEpoch="$(autoupdateRepoEpoch)"
+# 	local localEpoch; localEpoch="$(autoupdateLocalEpoch)"
+#
+# 	! [[ "${localEpoch}" =~ : ]] &&
+# 	[[ "${repoEpoch}" -gt "${localEpoch}" ]]
+# }
 
 
-autoupdateRepoEpoch () {
-	curl --silent "https://raw.githubusercontent.com/cmuench/pacman-auto-update/master/package/PKGBUILD" |
-	grep "pkgver=" |
-	cut --delimiter='=' --fields=2
-}
+# autoupdateLocalEpoch () {
+# 	pacman --query --info pacman-auto-update |
+# 	grep "Version" |
+# 	cut --delimiter=' ' --fields=11 |
+# 	cut --delimiter='-' --fields=1
+# }
+
+
+# autoupdateRepoEpoch () {
+# 	curl --silent "https://raw.githubusercontent.com/cmuench/pacman-auto-update/master/package/PKGBUILD" |
+# 	grep "pkgver=" |
+# 	cut --delimiter='=' --fields=2
+# }
 
 
 batteryIsCharged () {
-	local capacity="/sys/class/power_supply/BAT1/capacity"
+	local capacity="/sys/class/power_supply/BAT0/capacity"
 
-	[[ ! -f "${capacity}" || "$(cat "${capacity}")" -ge 90 ]]
+	[[ ! -f "${capacity}" || "$(cat "${capacity}")" -ge 50 ]]
 }
 
 
@@ -84,12 +84,12 @@ deferInterruption () {
 }
 
 
-downloadAutoupdatePackageComponents () {
-	local url="https://raw.githubusercontent.com/cmuench/pacman-auto-update/master/package"
-
-	curl --silent "${url}/PKGBUILD" > PKGBUILD
-	curl --silent "${url}/recipes.sh" > recipes.sh
-}
+# downloadAutoupdatePackageComponents () {
+# 	local url="https://raw.githubusercontent.com/cmuench/pacman-auto-update/master/package"
+#
+# 	curl --silent "${url}/PKGBUILD" > PKGBUILD
+# 	curl --silent "${url}/recipes.sh" > recipes.sh
+# }
 
 
 downloadPackage () {
@@ -99,14 +99,14 @@ downloadPackage () {
 }
 
 
-enterAutoupdateBuildDir () {
-	local dir="/tmp/pacman-auto-update"
-
-	so rm --recursive --force "${dir}"
-	so mkdir --parents "${dir}"
-	so chown --recursive nobody "${dir}"
-	cd "${dir}"
-}
+# enterAutoupdateBuildDir () {
+# 	local dir="/tmp/pacman-auto-update"
+#
+# 	so rm --recursive --force "${dir}"
+# 	so mkdir --parents "${dir}"
+# 	so chown --recursive nobody "${dir}"
+# 	cd "${dir}"
+# }
 
 
 installPackage () {
@@ -118,7 +118,7 @@ installPackage () {
 
 installUpdates () {
 	#shellcheck disable=SC2068
-	so pacman --sync --sysupgrade --noconfirm ${@}
+	so pacman --sync --sysupgrade --downloadonly --noconfirm 
 	refreshDatabases
 }
 
@@ -134,10 +134,10 @@ keyrings () {
 }
 
 
-makePackage () {
-	export PACKAGER="autoupdate <@${HOSTNAME}>"
-	so commandAsUser nobody makepkg --syncdeps --needed --rmdeps --force --noconfirm
-}
+# makePackage () {
+# 	export PACKAGER="autoupdate <@${HOSTNAME}>"
+# 	so commandAsUser nobody makepkg --syncdeps --needed --rmdeps --force --noconfirm
+# }
 
 
 ongoingInstallation () {
@@ -199,23 +199,23 @@ packageVersion () {
 }
 
 
-pruneOldPackages () {
-	pruneOrphans
+# pruneOldPackages () {
+# 	pruneOrphans
+#
+# 	if [[ "$(hash paccache 2> /dev/null)" ]]; then
+# 		so paccache --remove --uninstalled --keep 0
+# 		so paccache --remove --keep 2
+# 	fi
+# }
 
-	if [[ "$(hash paccache 2> /dev/null)" ]]; then
-		so paccache --remove --uninstalled --keep 0
-		so paccache --remove --keep 2
-	fi
-}
 
-
-pruneOrphans () {
-	local orphans; orphans="$(pacman --query --deps --unrequired --quiet || true)"
-
-	if [[ -n "${orphans}" ]]; then
-		so pacman --noconfirm --remove --recursive --unneeded "${orphans}"
-	fi
-}
+# pruneOrphans () {
+# 	local orphans; orphans="$(pacman --query --deps --unrequired --quiet || true)"
+#
+# 	if [[ -n "${orphans}" ]]; then
+# 		so pacman --noconfirm --remove --recursive --unneeded "${orphans}"
+# 	fi
+# }
 
 
 refreshDatabases () {
@@ -225,11 +225,11 @@ refreshDatabases () {
 }
 
 
-removeCurrentDir () {
-	local dir="${PWD}"
-	cd ".."
-	so rm --recursive --force "${dir}"
-}
+# removeCurrentDir () {
+# 	local dir="${PWD}"
+# 	cd ".."
+# 	so rm --recursive --force "${dir}"
+# }
 
 
 setTrap () {
@@ -275,13 +275,13 @@ terminateChildren () {
 }
 
 
-updateAutoupdate () {
-	enterAutoupdateBuildDir
-	downloadAutoupdatePackageComponents
-	makePackage
-	waitFor updatePackagesHere
-	removeCurrentDir
-}
+# updateAutoupdate () {
+# 	enterAutoupdateBuildDir
+# 	downloadAutoupdatePackageComponents
+# 	makePackage
+# 	waitFor updatePackagesHere
+# 	removeCurrentDir
+# }
 
 
 updateKeyrings () {	
@@ -316,22 +316,22 @@ updateKeyringsFromServer () {
 }
 
 
-updatePackagesHere () {
-	so pacman --upgrade --noconfirm ./*.pkg.*
-	refreshDatabases
-}
+# updatePackagesHere () {
+# 	so pacman --upgrade --noconfirm ./*.pkg.*
+# 	refreshDatabases
+# }
 
 
 updateSystem () {
-	installUpdates "--downloadonly"
+	# installUpdates "--downloadonly"
 	waitFor installUpdates
-	waitFor pruneOldPackages
+	# waitFor pruneOldPackages
 }
 
 
-updatingAutoupdateIsNeeded () {
-	autoupdateIsOutdated || [[ -n "${forcedUpdate}" ]]
-}
+# updatingAutoupdateIsNeeded () {
+# 	autoupdateIsOutdated || [[ -n "${forcedUpdate}" ]]
+# }
 
 
 updatingIsFavorable () {
