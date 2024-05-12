@@ -1,9 +1,9 @@
 # Pacman Auto Update
 
-Keeps packages from compiled repositories updated hourly.
+Automaticly downloads packages for further ease update.
 
 Updates are automatically **postponed** under unfavorable conditions:
-- 🔋 The **battery** has less than 90% of charge.
+- 🔋 The **battery** has less than 50% of charge.
 - 💸 networkmanager is installed, and the **connection** is guessed as metered.
 - 🔒 The package database has a **lock** younger than a day, and older than boot time. Otherwise the lock is automatically removed.
 

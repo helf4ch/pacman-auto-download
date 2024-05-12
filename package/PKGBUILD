@@ -1,10 +1,10 @@
 #! /bin/bash
 
-pkgname="pacman-auto-update"
+pkgname="pacman-auto-download"
 install="recipes.sh"
 
-pkgdesc="Keeps packages from compiled repositories updated hourly"
-url="https://github.com/cmuench/pacman-auto-update"
+pkgdesc="Automaticly downloads packages for further ease update."
+url="https://github.com/helf4ch/pacman-auto-download"
 license=("GPL2")
 
 # set pkgver with: date +%s

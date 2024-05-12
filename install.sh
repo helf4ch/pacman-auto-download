@@ -3,11 +3,11 @@ set -e
 
 
 mainFunction () {
-	enterAutoupdateBuildDir
-	downloadAutoupdatePackageComponents
-	makePackage
-	updatePackagesHere
-	removeCurrentDir
+	# enterAutoupdateBuildDir
+	# downloadAutoupdatePackageComponents
+	# makePackage
+	# updatePackagesHere
+	# removeCurrentDir
 }
 
 
