@@ -1,9 +1,9 @@
 [Unit]
-Description=Pacman Auto Update
+Description=Pacman Auto Download
 After=network-online.target
 
 [Service]
-ExecStart=/usr/bin/pacman-auto-update
+ExecStart=/usr/bin/pacman-auto-download
 Nice=19
 KillMode=process
 SendSIGKILL=no

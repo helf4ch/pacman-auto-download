@@ -2,18 +2,18 @@
 
 
 post_install () {
-	systemctl enable --now pacman-auto-update.timer || true
+	systemctl enable --now pacman-auto-download.timer || true
 }
 
 
 post_upgrade () {
 	systemctl --system daemon-reload >/dev/null || true
-	systemctl restart pacman-auto-update.timer || true
+	systemctl restart pacman-auto-download.timer || true
 }
 
 
 pre_remove () {
-	systemctl disable --now pacman-auto-update.timer >/dev/null
+	systemctl disable --now pacman-auto-download.timer >/dev/null
 }
 
 

@@ -1,11 +1,11 @@
 [Unit]
-Description=Pacman Auto Update Timer
+Description=Pacman Auto Download Timer
 
 [Timer]
 OnBootSec=5min
 OnUnitInactiveSec=60min
 RandomizedDelaySec=10min
-Unit=pacman-auto-update.service
+Unit=pacman-auto-download.service
 
 [Install]
 WantedBy=multi-user.target
